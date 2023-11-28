@@ -1,0 +1,11 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    background-image: url('../images/1_3_480x480.webp');
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+}

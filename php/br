@@ -1,0 +1,31 @@
+if (count($errors) > 0) {
+                foreach ($errors as $error) {
+                    echo "<div class='bg-red-500 text-white p-4 mb-4 rounded-md'>$error</div>";
+                }
+            } else {
+                //insert data into database
+                require_once "connecter/connecter.php";
+                $sql = "INSERT INTO utilisateur (nom, prenom, email, mot_de_pass,id_role) VALUES (?, ?, ?, ?,null)";
+                $stmt = mysqli_stmt_init($conn);
+                $preparStmt = mysqli_stmt_prepare($stmt, $sql);
+
+                if ($preparStmt) {
+                    mysqli_stmt_bind_param($stmt, "ssss", $nom, $prenom, $Email, $password);
+
+                    if (mysqli_stmt_execute($stmt)) {
+                        echo "<div class='bg-green-500 text-white p-4 mb-4 rounded-md'>Vous êtes inscrit avec succès.</div>";
+                        $alae = "SELECT LAST_INSERT_ID()";
+                        $req = mysqli_query($conn, $alae);
+                        $row = mysqli_fetch_row($req);
+                        session_start();
+                        $_SESSION['id'] = $row[0];
+                        header('Location: choisir.php');
+                    } else {
+                        echo "<div class='bg-red-500 text-white p-4 mb-4 rounded-md'>Erreur lors de l'inscription : " . mysqli_stmt_error($stmt) . "</div>";
+                    }
+
+                    mysqli_stmt_close($stmt);
+                } else {
+                    die("Erreur de préparation de la requête : " . mysqli_error($conn));
+                }
+            }
