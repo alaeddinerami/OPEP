@@ -24,10 +24,12 @@
             $Email = $_POST['Email'];
             $password = $_POST['password'];
 
-            $sql = "INSERT INTO utilisateur (nom, prenom, email, mot_de_pass,id_role) VALUES ('$nom', '$prenom', '$Email', '$password',null)";
+            $sql =  "INSERT INTO utilisateur ( nom ,  prenom ,  email, mot_de_pass, id_role) VALUES ('$nom','$prenom','$Email','$password',null)";
             $req = mysqli_query($conn, $sql);
+
             //pour selectioner id pour choisir
             if ($req) {
+
                 $alae = "SELECT LAST_INSERT_ID()";
                 $req1 = mysqli_query($conn, $alae);
                 $row = mysqli_fetch_row($req1);
@@ -35,7 +37,7 @@
                 $_SESSION['id'] = $row[0];
                 header('Location: ../php/choisir.php');
             } else {
-                echo "déja exist";
+                echo "déja eGVYVT6VGF7";
             }
         }
 

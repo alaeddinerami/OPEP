@@ -8,7 +8,7 @@ include("connecter/connecter.php");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-100">
@@ -28,8 +28,8 @@ include("connecter/connecter.php");
             <h2 class="text-lg font-semibold mb-4">Actions</h2>
             <ul>
                 <li class="mb-2"><a href="Ajouter.php" class="text-black hover:text-gray-900">Ajouter</a></li>
-                <li class="mb-2"><a href="Modifier.php" class="text-black hover:text-gray-900">Modifier</a></li>
-                <li class="mb-2"><a href="Suppression.php" class="text-black hover:text-gray-900">Suppression</a></li>
+                
+                <li class="mb-2"><a href="Affichage.php" class="text-black hover:text-gray-900">Affichage</a></li>
             </ul>
         </div>
 
@@ -42,18 +42,20 @@ include("connecter/connecter.php");
                 <h3 class="text-2xl font-semibold mb-4">Add Category</h3>
 
                 <?php
-                
+
                 if (isset($_POST["AddCategory"])) {
                     $category = $_POST["categoryName"];
                     $sql = "INSERT INTO categorie (Nom_categorie) VALUES ('$category')";
                     $rqt = mysqli_query($conn, $sql);
-                    if($rqt){
+                    if ($rqt) {
                         echo "adding";
-                    }else{
+                    } else {
                         echo "déja exist";
                     }
-                    
                 }
+                $rqt2 = "SELECT * FROM `categorie`";
+                $categories = mysqli_query($conn, $rqt2);
+
                 ?>
                 <form class="max-w-md" action="" method="POST">
                     <div class="mb-4">
@@ -65,47 +67,68 @@ include("connecter/connecter.php");
 
                 <br>
                 <!-- <div class="container mx-auto p-8"> -->
-        <h1 class="text-2xl font-semibold mb-4">Add Plant</h1>$
+                <h1 class="text-2xl font-semibold mb-4">Add Plant</h1>
 
-        <?php
-        if (isset($_POST["AddPlant"])) {
-            $Nom= $_POST["nom"];
-            $Prix = $_POST["prix"];
-            $Description = $_POST["description"];
-            $Images = $_POST["images"];
+                <?php
+                if (isset($_POST["AddPlant"])) {
+                    $Nom = $_POST["nom"];
+                    $Prix = $_POST["prix"];
+                    $Description = $_POST["description"];
+                    $Images = $_POST["images"];
+                    $Idcategorie = $_POST["categorie"];
 
-            $sql = "INSERT INTO  plante("
-        }
+                    $sql = "INSERT INTO plante( Nom, Prix, Description , Images, Id_categorie ) VALUES ('$Nom','$Prix','$Description','$Images','$Idcategorie')";
+                    $plante = mysqli_query($conn, $sql);
+                    if ($plante) {
+                        echo "Ajouté avec succès";
+                    } 
+                }
+
+                ?>
+                <form action="" method="POST" class="max-w-md">
+                    <div class="mb-4">
+                        <label for="nom" class="block text-gray-600 text-sm font-medium mb-2">Nom</label>
+                        <input type="text" id="nom" name="nom" class="w-full border rounded-md p-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="prix" class="block text-gray-600 text-sm font-medium mb-2">Prix</label>
+                        <input type="text" id="prix" name="prix" class="w-full border rounded-md p-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="description" class="block text-gray-600 text-sm font-medium mb-2">Description</label>
+                        <textarea id="description" name="description" rows="4" class="w-full border rounded-md p-2"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="images" class="block text-gray-600 text-sm font-medium mb-2">Images</label>
+                        <input type="file" id="images" name="images" class="w-full border rounded-md p-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="categorie" class="block text-gray-600 text-sm font-medium mb-2">Categorie</label>
+                        <select id="categorie" name="categorie" class="w-full border rounded-md p-2">
+                            <?php
+                            if (mysqli_num_rows($categories) > 0) {
+                                while ($rowCategory = mysqli_fetch_assoc($categories)) {
+                                    $categoryId = $rowCategory['ID_categorie'];
+                                    $categoryName = $rowCategory['Nom_categorie'];
+                                    echo "<option value='$categoryId'>$categoryName</option>";
+                                }
+                            } else {
+                                echo "<option value='' disabled>No categories available</option>";
+                            }
+                            ?>
+
+                        </select>
+                    </div>
+
+
+                    <button type="submit" name="AddPlant" class="bg-blue-500 text-white px-4 py-2 rounded-md">Add Plant</button>
+                </form>
                 
-        ?>
-        <form action="" method="POST" class="max-w-md">
-            <div class="mb-4">
-                <label for="nom" class="block text-gray-600 text-sm font-medium mb-2">Nom</label>
-                <input type="text" id="nom" name="nom" class="w-full border rounded-md p-2">
             </div>
-
-            <div class="mb-4">
-                <label for="prix" class="block text-gray-600 text-sm font-medium mb-2">Prix</label>
-                <input type="text" id="prix" name="prix" class="w-full border rounded-md p-2">
-            </div>
-
-            <div class="mb-4">
-                <label for="description" class="block text-gray-600 text-sm font-medium mb-2">Description</label>
-                <textarea id="description" name="description" rows="4" class="w-full border rounded-md p-2"></textarea>
-            </div>
-
-            <div class="mb-4">
-                <label for="images" class="block text-gray-600 text-sm font-medium mb-2">Images</label>
-                <input type="file" id="images" name="images" class="w-full border rounded-md p-2">
-            </div>
-
-            <button type="submit" name="AddPlant" class="bg-blue-500 text-white px-4 py-2 rounded-md">Add Plant</button>
-        </form>
-    <!-- </div> -->
-            </div>
-
-            <!-- Example: Edit Category -->
-            <!-- You can create similar sections for other actions -->
 
         </div>
     </div>
